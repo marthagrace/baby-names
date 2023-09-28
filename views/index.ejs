@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Names API Example</title>
+
+    <style>
+      body, h1, label, select, button, ul {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 100px;
+    background-image:url("https://www.npr.org/assets/img/2021/05/05/LK_BabyName_Gif.gif") ;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight:bolder;
+}
+
+#genderSelect {
+    margin: 10px 0;
+    padding: 5px;
+    border: 3px solid #100f0f;
+    border-radius: 4px;
+}
+
+button {
+    padding: 5px 10px;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #00CC66; /* Default background color (green) */
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#nameContainer {
+    margin-top: 20px;
+    padding: 10px;
+    border: 5px solid black;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    margin: 40px 10;
+}
+.d1{
+    background-color: transparent;
+    padding: 20px;
+    width: 600px;
+    margin-left: 350px;
+    box-shadow: #333;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="d1">
+    <h1>Baby Names</h1>
+    <label for="genderSelect">Select Gender: </label>
+    <select id="genderSelect">
+        <option value="neutral">Neutral</option>
+        <option value="boy">Male</option>
+        <option value="girl">Female</option>
+    </select>
+    <button id="fetchNames">Fetch Names</button>
+    <div id="nameContainer"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const apiKey = 'sWekamKjkdrOg9jnUNxnuYbHhYUvR90TBeyAr2xh'; // Replace with your actual API key
+        const fetchButton = document.getElementById('fetchNames');
+        const genderSelect = document.getElementById('genderSelect');
+        const nameContainer = document.getElementById('nameContainer');
+
+        fetchButton.addEventListener('click', () => {
+            const selectedGender = genderSelect.value;
+            
+            const apiUrl = `https://api.api-ninjas.com/v1/babynames?gender=${selectedGender}`;
+
+            $.ajax({
+                method: 'GET',
+                url: apiUrl,
+                headers: { 'X-Api-Key': apiKey },
+                contentType: 'application/json',
+                success: function(result) {
+                    // Handle and display the API data here
+                    displayNames(result);
+                },
+                error: function ajaxError(jqXHR) {
+                    console.error('Error: ', jqXHR.responseText);
+                    nameContainer.innerHTML = '<p>Error fetching data from the API</p>';
+                }
+            });
+        });
+
+        function displayNames(data) {
+            nameContainer.innerHTML = '';
+            if (data.length === 0) {
+                nameContainer.innerHTML = '<p>No names found for this gender.</p>';
+            } else {
+                const nameList = document.createElement('ul');
+                data.forEach(name => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = name;
+                    nameList.appendChild(listItem);
+                });
+                nameContainer.appendChild(nameList);
+            }
+        }
+        
+    </script>
+</body>
+</html>
